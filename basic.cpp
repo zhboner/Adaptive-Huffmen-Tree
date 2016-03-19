@@ -50,11 +50,6 @@ Node *root, *NYT;
 string path[base + 1];          // path[base] = NYT path
 string str;                     // The string that is going to be compressed
 
-//bool atRight(Node* n){
-//    Node *parent = n->parentNode;
-//    return parent->rightNode == n;
-//}
-
 void updateId(){
     queue<Node*> q;
     int n = base;
@@ -167,22 +162,34 @@ void swapNodes(Node *x, Node *y){
     x->id = y->id;
     y->id = tmp;
 
-    if (x->isRight()){
-        xParent->rightNode = y;
+    if (xParent == yParent){
+        if (x->isRight()){
+            xParent->rightNode = y;
+            xParent->leftNode = x;
+        }
+        else{
+            xParent->leftNode = y;
+            xParent->rightNode = x;
+        }
     }
     else{
-        xParent->leftNode = y;
-    }
+        if (x->isRight()){
+            xParent->rightNode = y;
+        }
+        else{
+            xParent->leftNode = y;
+        }
 
-    if (y->isRight()){
-        yParent->rightNode = x;
-    }
-    else{
-        yParent->leftNode = x;
-    }
+        if (y->isRight()){
+            yParent->rightNode = x;
+        }
+        else{
+            yParent->leftNode = x;
+        }
 
-    x->parentNode = yParent;
-    y->parentNode = xParent;
+        x->parentNode = yParent;
+        y->parentNode = xParent;
+    }
 }
 
 Node* slideAndIncrement(Node *p){

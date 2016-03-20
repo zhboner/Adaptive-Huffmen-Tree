@@ -137,24 +137,11 @@ queue<Node*> getBlock(int weight, bool leaf){
 
     if (leaf) return queueLeaf;
     else return queueInternal;
-
-//    if (nextBlock){
-//        if (node->isLeaf()){
-//            if (!queueInternal.empty()) return queueInternal;
-//            else return queueLeaf;
-//        }
-//        else{
-//            if (!queueLeaf.empty()) return queueLeaf;
-//            else return queueInternal;
-//        }
-//    }
-//    else{
-//        if (node->isLeaf()) return queueLeaf;
-//        else return queueInternal;
-//    }
 }
 
 void swapNodes(Node *x, Node *y){
+    if (x == y)
+        return;
     Node *xParent = x->parentNode;
     Node *yParent = y->parentNode;
     int tmp = x->id;
@@ -230,8 +217,8 @@ Node* slideAndIncrement(Node *p){
             else{
                 parent->leftNode = x;
             }
+            //Node *xParent = x->parentNode;
             x->parentNode = parent;
-
             x = y;
         }
 

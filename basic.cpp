@@ -44,7 +44,7 @@ public:
         return false;
     }
 };
-const int base = 257;
+const int base = 257 + 128;
 int availableId;
 Node *root, *NYT;
 string path[base + 1];          // path[base] = NYT path
@@ -73,7 +73,7 @@ void updateId(){
 
 void buildPath(string p, Node *node){
     if (node->value){
-        path[node->value] = p;
+        path[node->value + 128] = p;
     }
     else if (node->weight == 0){
         path[base] = p;
@@ -94,12 +94,13 @@ void buildPath(string p, Node *node){
 }
 
 Node *findNode(char chr){       // Find the node
-    if (path[chr] == "-1"){
+    int index = chr + 128;
+    if (path[index] == "-1"){
         return NULL;
     }
     Node *n = root;
-    for (int i = 0; i < path[chr].size(); ++i) {
-        if (path[chr][i] == '0'){
+    for (int i = 0; i < path[index].size(); ++i) {
+        if (path[index][i] == '0'){
             n = n->leftNode;
         }
         else{
@@ -179,13 +180,51 @@ void swapNodes(Node *x, Node *y){
     }
 }
 
+queue<Node*> getSlideBlock(int weight, Node* node){
+    queue<Node*> q1, q2, q3;
+    Node *n = root;
+    bool leaf = (weight != node->weight);
+
+    q1.push(n);
+    while (!q1.empty()){
+        n = q1.front();
+        q1.pop();
+
+        if (n->weight == weight){
+            if (n->isLeaf() && leaf && n != NYT){
+                q2.push(n);
+            }
+            if (!n->isLeaf() && !leaf){
+                q2.push(n);
+            }
+        }
+        if (n == node){
+            q2.push(n);
+        }
+        if (n->rightNode){
+            q1.push(n->rightNode);
+        }
+        if (n->leftNode){
+            q1.push(n->leftNode);
+        }
+    }
+    while (!q2.empty()){
+        if (q2.front() == node){
+            break;
+        }
+        q3.push(q2.front());
+        q2.pop();
+    }
+    return q3;
+}
+
 Node* slideAndIncrement(Node *p){
     queue<Node*> b;
     if (p->isLeaf()){
-        b = getBlock(p->weight, false);
+        b = getSlideBlock(p->weight, p);
     }
     else{
-        b = getBlock(p->weight + 1, true);
+        b = getSlideBlock(p->weight + 1, p);
     }
     Node *watch = b.front();
     if (!b.empty() && ((p->isLeaf() && !b.front()->isLeaf() && p->weight == b.front()->weight) ||
@@ -245,6 +284,7 @@ Node* slideAndIncrement(Node *p){
 }
 
 
+
 void updateTree(char input){
     Node *targetNode = findNode(input);
     Node *leafToIncrement = NULL;
@@ -273,7 +313,7 @@ void updateTree(char input){
             NYT = newNYT;
 
             path[base] = "0";
-            path[input] = "1";
+            path[input + 128] = "1";
         }
         else{
             Node *NYTParent = NYT->parentNode;

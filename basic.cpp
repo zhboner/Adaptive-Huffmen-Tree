@@ -4,7 +4,6 @@
 #include <string>
 #include <cstdlib>
 #include <bitset>
-#include <cmath>
 
 using namespace std;
 
@@ -31,13 +30,13 @@ public:
         value = '\0';
     }
 
-    bool isLeaf(){
+    bool isLeaf(){              // Return if a node is a leaf node
         if (!this->leftNode && !this->rightNode){
             return true;
         }
         return false;
     }
-    bool isRight(){
+    bool isRight(){             // Return if a node is the right node of its parent node
         if (this->parentNode){
             return this->parentNode->rightNode == this;
         }
@@ -50,7 +49,7 @@ Node *root, *NYT;
 string path[base + 1];          // path[base] = NYT path
 string str;                     // The string that is going to be compressed
 
-void updateId(){
+void updateId(){                // This function updates every nodes' id after a character inserted.
     queue<Node*> q;
     int n = base;
     Node *xxxxxx;
@@ -71,7 +70,7 @@ void updateId(){
     }
 }
 
-void buildPath(string p, Node *node){
+void buildPath(string p, Node *node){           // This function updates the path list.
     if (node->value){
         path[node->value + 128] = p;
     }
@@ -93,7 +92,7 @@ void buildPath(string p, Node *node){
     }
 }
 
-Node *findNode(char chr){       // Find the node
+Node *findNode(char chr){       // Find the target node, if a node is found, return it. Otherwise, return false.
     int index = chr + 128;
     if (path[index] == "-1"){
         return NULL;
@@ -110,7 +109,7 @@ Node *findNode(char chr){       // Find the node
     return n;
 }
 
-queue<Node*> getBlock(int weight, bool leaf){
+queue<Node*> getBlock(int weight, bool leaf){           // Get the block of nodes
     queue<Node*> queueLeaf, queueInternal, tree;
     Node *n;
 
@@ -140,7 +139,7 @@ queue<Node*> getBlock(int weight, bool leaf){
     else return queueInternal;
 }
 
-void swapNodes(Node *x, Node *y){
+void swapNodes(Node *x, Node *y){           // Change two nodes' positions.
     if (x == y)
         return;
     Node *xParent = x->parentNode;
@@ -180,7 +179,7 @@ void swapNodes(Node *x, Node *y){
     }
 }
 
-queue<Node*> getSlideBlock(int weight, Node* node){
+queue<Node*> getSlideBlock(int weight, Node* node){         // Get the block for slide change
     queue<Node*> q1, q2, q3;
     Node *n = root;
     bool leaf = (weight != node->weight);
@@ -218,7 +217,7 @@ queue<Node*> getSlideBlock(int weight, Node* node){
     return q3;
 }
 
-Node* slideAndIncrement(Node *p){
+Node* slideAndIncrement(Node *p){           // Put the node to the top of the block
     queue<Node*> b;
     if (p->isLeaf()){
         b = getSlideBlock(p->weight, p);
@@ -256,7 +255,6 @@ Node* slideAndIncrement(Node *p){
             else{
                 parent->leftNode = x;
             }
-            //Node *xParent = x->parentNode;
             x->parentNode = parent;
             x = y;
         }
@@ -285,7 +283,7 @@ Node* slideAndIncrement(Node *p){
 
 
 
-void updateTree(char input){
+void updateTree(char input){            // Insert a character into the tree
     Node *targetNode = findNode(input);
     Node *leafToIncrement = NULL;
 

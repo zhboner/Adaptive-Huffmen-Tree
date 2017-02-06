@@ -75,7 +75,7 @@ int main() {
     Node NYTNode = Node(availableId--, 0, NULL, NULL, NULL, '\0');
     char in[8000];
 
-    while (true){
+    while (true){                   // Read a line and call ahdecode to decode.
         for (int k = 0; k < base + 1; ++k) {
             path[k] = "-1";
         }

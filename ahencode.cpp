@@ -36,7 +36,7 @@ string ahencode(string st, bool space){
 int main(int argc, char *argv[]) {
     availableId = base;
     Node NYTNode = Node(availableId--, 0, NULL, NULL, NULL, '\0');
-    char in[1000];
+    string in;
     bool space;
 
     if (argc == 2 && argv[1][0] == '-' && argv[1][1] == 's'){
@@ -46,7 +46,7 @@ int main(int argc, char *argv[]) {
         space = false;
     }
 
-    while (true){
+    while (getline(cin, in)){                   // Read a line and call ahencode() to encode.
         for (int k = 0; k < base + 1; ++k) {
             path[k] = "-1";
         }
@@ -54,7 +54,6 @@ int main(int argc, char *argv[]) {
         availableId = base;
         root = NYT;
 
-        cin.getline(in, 1000);
         str = string(in);
 
         if (str.size() == 0) break;
